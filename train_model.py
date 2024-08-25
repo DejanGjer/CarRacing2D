@@ -4,6 +4,7 @@ from collections import deque
 from CarRacingDQNAgent import CarRacingDQNAgent
 from common_functions import process_state_image
 from common_functions import generate_state_frame_stack_from_queue
+from tqdm import tqdm
 
 RENDER                        = False
 STARTING_EPISODE              = 1
@@ -30,7 +31,7 @@ if __name__ == '__main__':
     if args.end:
         ENDING_EPISODE = args.end
 
-    for e in range(STARTING_EPISODE, ENDING_EPISODE+1):
+    for e in tqdm(range(STARTING_EPISODE, ENDING_EPISODE+1)):
         init_state = env.reset()
         init_state = process_state_image(init_state)
 
