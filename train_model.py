@@ -36,7 +36,7 @@ if __name__ == '__main__':
     print("Running training loop")
     for e in tqdm(range(STARTING_EPISODE, ENDING_EPISODE+1)):
         init_state = env.reset()[0]
-        init_state = process_state_image(init_state, 0)
+        init_state = process_state_image(init_state)
 
         total_reward = 0
         negative_reward_counter = 0
@@ -71,7 +71,7 @@ if __name__ == '__main__':
 
             total_reward += reward
 
-            next_state = process_state_image(next_state, steps)
+            next_state = process_state_image(next_state)
             state_frame_stack_queue.append(next_state)
             next_state_frame_stack = generate_state_frame_stack_from_queue(state_frame_stack_queue)
 

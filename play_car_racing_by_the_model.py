@@ -1,5 +1,6 @@
 import argparse
 import gym
+import pygame
 from collections import deque
 from CarRacingDQNAgent import CarRacingDQNAgent
 from common_functions import process_state_image
@@ -13,12 +14,16 @@ if __name__ == '__main__':
     train_model = args.model
     play_episodes = args.episodes
 
-    env = gym.make('CarRacing-v0')
+    env = gym.make('CarRacing-v2', render_mode="human")
     agent = CarRacingDQNAgent(epsilon=0) # Set epsilon to 0 to ensure all actions are instructed by the agent
     agent.load(train_model)
 
+    # Initialize pygame
+    pygame.init()
+    screen = pygame.display.set_mode((800, 600))  # Dummy screen
+
     for e in range(play_episodes):
-        init_state = env.reset()
+        init_state = env.reset()[0]
         init_state = process_state_image(init_state)
 
         total_reward = 0
@@ -31,8 +36,8 @@ if __name__ == '__main__':
 
             current_state_frame_stack = generate_state_frame_stack_from_queue(state_frame_stack_queue)
             action = agent.act(current_state_frame_stack)
-            next_state, reward, done, info = env.step(action)
-
+            next_state, reward, terminated, truncated, info = env.step(action)
+            done = terminated or truncated
             total_reward += reward
 
             next_state = process_state_image(next_state)
@@ -42,3 +47,5 @@ if __name__ == '__main__':
                 print('Episode: {}/{}, Scores(Time Frames): {}, Total Rewards: {:.2}'.format(e+1, play_episodes, time_frame_counter, float(total_reward)))
                 break
             time_frame_counter += 1
+    env.close()
+    pygame.quit()
