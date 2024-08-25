@@ -132,3 +132,6 @@ dmypy.json
 
 # Images sampled
 images/
+
+# Slurm files
+slurm*
