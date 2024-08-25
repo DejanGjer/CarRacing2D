@@ -22,7 +22,9 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--epsilon', type=float, default=1.0, help='The starting epsilon of the agent, default to 1.0.')
     args = parser.parse_args()
 
+    print("Loading environment ...")
     env = gym.make('CarRacing-v2')
+    print("Loading agent ...")
     agent = CarRacingDQNAgent(epsilon=args.epsilon)
     if args.model:
         agent.load(args.model)
@@ -31,6 +33,7 @@ if __name__ == '__main__':
     if args.end:
         ENDING_EPISODE = args.end
 
+    print("Running training loop")
     for e in tqdm(range(STARTING_EPISODE, ENDING_EPISODE+1)):
         init_state = env.reset()
         init_state = process_state_image(init_state)
@@ -41,7 +44,10 @@ if __name__ == '__main__':
         time_frame_counter = 1
         done = False
         
+        steps = 0
         while True:
+            print(f"Step: {steps}")
+            steps += 1
             if RENDER:
                 env.render()
 
