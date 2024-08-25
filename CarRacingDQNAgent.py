@@ -44,7 +44,7 @@ class CarRacingDQNAgent:
         model.add(Flatten())
         model.add(Dense(216, activation='relu'))
         model.add(Dense(len(self.action_space), activation=None))
-        model.compile(loss='mean_squared_error', optimizer=Adam(lr=self.learning_rate, epsilon=1e-7))
+        model.compile(loss='mean_squared_error', optimizer=Adam(learning_rate=self.learning_rate, epsilon=1e-7))
         return model
 
     def update_target_model(self):

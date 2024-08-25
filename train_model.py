@@ -5,7 +5,7 @@ from CarRacingDQNAgent import CarRacingDQNAgent
 from common_functions import process_state_image
 from common_functions import generate_state_frame_stack_from_queue
 
-RENDER                        = True
+RENDER                        = False
 STARTING_EPISODE              = 1
 ENDING_EPISODE                = 1000
 SKIP_FRAMES                   = 2
@@ -21,7 +21,7 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--epsilon', type=float, default=1.0, help='The starting epsilon of the agent, default to 1.0.')
     args = parser.parse_args()
 
-    env = gym.make('CarRacing-v0')
+    env = gym.make('CarRacing-v2')
     agent = CarRacingDQNAgent(epsilon=args.epsilon)
     if args.model:
         agent.load(args.model)
