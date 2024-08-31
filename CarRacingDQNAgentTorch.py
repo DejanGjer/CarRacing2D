@@ -112,7 +112,7 @@ class CarRacingDQNAgent:
         self.update_target_model()
 
     def load_inference(self, name):
-        self.model.load_state_dict(torch.load(name, weight_only=True, map_location=torch.device("cpu")))
+        self.model.load_state_dict(torch.load(name, weights_only=True, map_location=torch.device("cpu")))
         self.model.eval()
 
     def save(self, name):
