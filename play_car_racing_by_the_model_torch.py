@@ -16,7 +16,7 @@ if __name__ == '__main__':
 
     env = gym.make('CarRacing-v2', render_mode="human")
     agent = CarRacingDQNAgent(epsilon=0) # Set epsilon to 0 to ensure all actions are instructed by the agent
-    agent.load(train_model)
+    agent.load_inference(train_model)
 
     # Initialize pygame
     pygame.init()

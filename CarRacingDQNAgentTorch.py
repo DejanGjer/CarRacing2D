@@ -60,7 +60,7 @@ class CarRacingDQNAgent:
         self.criterion = nn.MSELoss()
 
         self.update_target_model()
-        
+
 
     def update_target_model(self):
         self.target_model.load_state_dict(self.model.state_dict())
@@ -110,6 +110,10 @@ class CarRacingDQNAgent:
     def load(self, name):
         self.model.load_state_dict(torch.load(name))
         self.update_target_model()
+
+    def load_inference(self, name):
+        self.model.load_state_dict(torch.load(name), weight_only=True, map_location=torch.device("cpu"))
+        self.model.eval()
 
     def save(self, name):
         torch.save(self.model.state_dict(), name)
