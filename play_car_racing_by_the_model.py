@@ -1,35 +1,27 @@
 import argparse
 import gym
 import pygame
+import time
 from collections import deque
-from CarRacingDQNAgent import CarRacingDQNAgent
+from CarRacingDQNAgentTorch import CarRacingDQNAgent
 from common_functions import process_state_image
 from common_functions import generate_state_frame_stack_from_queue
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Play CarRacing by the trained model.')
-    parser.add_argument('-m', '--model', required=True, help='The `.h5` file of the trained model.')
-    parser.add_argument('-e', '--episodes', type=int, default=1, help='The number of episodes should the model plays.')
-    args = parser.parse_args()
-    train_model = args.model
-    play_episodes = args.episodes
-
-    env = gym.make('CarRacing-v2', render_mode="human")
+def play(train_model, play_episodes, render_mode):
+    env = gym.make('CarRacing-v2', render_mode=render_mode)
     agent = CarRacingDQNAgent(epsilon=0) # Set epsilon to 0 to ensure all actions are instructed by the agent
-    agent.load(train_model)
+    agent.load_inference(train_model)
 
-    # Initialize pygame
-    pygame.init()
-    screen = pygame.display.set_mode((800, 600))  # Dummy screen
+    actions = []
 
     for e in range(play_episodes):
         init_state = env.reset()[0]
         init_state = process_state_image(init_state)
 
         total_reward = 0
-        punishment_counter = 0
         state_frame_stack_queue = deque([init_state]*agent.frame_stack_num, maxlen=agent.frame_stack_num)
-        time_frame_counter = 1
+        actions.append([])
+        frames = 0
         
         while True:
             env.render()
@@ -39,13 +31,51 @@ if __name__ == '__main__':
             next_state, reward, terminated, truncated, info = env.step(action)
             done = terminated or truncated
             total_reward += reward
+            actions[-1].append(action)
 
             next_state = process_state_image(next_state)
             state_frame_stack_queue.append(next_state)
+            frames += 1
 
             if done:
-                print('Episode: {}/{}, Scores(Time Frames): {}, Total Rewards: {:.2}'.format(e+1, play_episodes, time_frame_counter, float(total_reward)))
+                print('Episode: {}/{}, Scores(Time Frames): {}, Total Rewards: {:.5}'.format(e+1, play_episodes, frames, float(total_reward)))
                 break
-            time_frame_counter += 1
+    env.close()
+    return actions
+
+def render(actions):
+    env = gym.make('CarRacing-v2', render_mode="human")
+    for e in range(len(actions)):
+        init_state = env.reset()[0]
+        init_state = process_state_image(init_state)
+        done = False
+        frame = 0
+        
+        while not done:
+            env.render()
+            action = actions[e][frame]
+            _, _, terminated, truncated, _ = env.step(action)
+            done = terminated or truncated
+            frame += 1
+            time.sleep(0.02)
+
     env.close()
     pygame.quit()
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Play CarRacing by the trained model.')
+    parser.add_argument('-m', '--model', required=True, help='The `.pt` file of the trained model.')
+    parser.add_argument('-e', '--episodes', type=int, default=1, help='The number of episodes should the model plays.')
+    parser.add_argument('-p', '--precompute', action='store_true', help='Precompute the actions for each time frame.')
+    args = parser.parse_args()
+    train_model = args.model
+    play_episodes = args.episodes
+
+    if args.precompute:
+        print("Precomputing the actions for each time frame...")
+        actions = play(train_model, play_episodes, render_mode="rgb_array")
+        print("Rendering the actions...")
+        render(actions)
+    else:
+        print("Playing the CarRacing...")
+        play(train_model, play_episodes, render_mode="human")

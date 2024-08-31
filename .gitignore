@@ -139,3 +139,4 @@ slurm*
 # Checkpoints
 previous_checkpoints/
 save/
+output/
