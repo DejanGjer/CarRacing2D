@@ -12,7 +12,7 @@ class DQN(nn.Module):
         self.pool1 = nn.MaxPool2d(kernel_size=2)
         self.conv2 = nn.Conv2d(6, 12, kernel_size=4)
         self.pool2 = nn.MaxPool2d(kernel_size=2)
-        self.fc1 = nn.Linear(12 * 18 * 18, 216)
+        self.fc1 = nn.Linear(432, 216)
         self.fc2 = nn.Linear(216, num_actions)
 
     def forward(self, x):
@@ -60,19 +60,7 @@ class CarRacingDQNAgent:
         self.criterion = nn.MSELoss()
 
         self.update_target_model()
-
-    # def build_model(self):
-    #     # Neural Net for Deep-Q learning Model
-    #     model = Sequential()
-    #     model.add(Conv2D(filters=6, kernel_size=(7, 7), strides=3, activation='relu', input_shape=(96, 96, self.frame_stack_num)))
-    #     model.add(MaxPooling2D(pool_size=(2, 2)))
-    #     model.add(Conv2D(filters=12, kernel_size=(4, 4), activation='relu'))
-    #     model.add(MaxPooling2D(pool_size=(2, 2)))
-    #     model.add(Flatten())
-    #     model.add(Dense(216, activation='relu'))
-    #     model.add(Dense(len(self.action_space), activation=None))
-    #     model.compile(loss='mean_squared_error', optimizer=Adam(learning_rate=self.learning_rate, epsilon=1e-7))
-    #     return model
+        
 
     def update_target_model(self):
         self.target_model.load_state_dict(self.model.state_dict())

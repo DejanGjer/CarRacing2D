@@ -9,4 +9,4 @@
 #SBATCH --error slurm.%J.err
 #SBATCH --time=48:00:00
 
-python test_gpu.py
+python train_model.py

@@ -135,3 +135,7 @@ images/
 
 # Slurm files
 slurm*
+
+# Checkpoints
+previous_checkpoints/
+save/

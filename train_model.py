@@ -1,17 +1,17 @@
 import argparse
 import gym
 from collections import deque
-from CarRacingDQNAgent import CarRacingDQNAgent
+from CarRacingDQNAgentTorch import CarRacingDQNAgent
 from common_functions import process_state_image
 from common_functions import generate_state_frame_stack_from_queue
 from tqdm import tqdm
 
 RENDER                        = False
 STARTING_EPISODE              = 1
-ENDING_EPISODE                = 1000
+ENDING_EPISODE                = 200
 SKIP_FRAMES                   = 2
 TRAINING_BATCH_SIZE           = 64
-SAVE_TRAINING_FREQUENCY       = 1
+SAVE_TRAINING_FREQUENCY       = 20
 UPDATE_TARGET_MODEL_FREQUENCY = 5
 
 if __name__ == '__main__':
