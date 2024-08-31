@@ -4,7 +4,7 @@
 #SBATCH --nodelist=n19
 #SBATCH --partition=cuda
 #SBATCH --gres=gpu:1
-#SBATCH --mem=16GB
+#SBATCH --mem=15GB
 #SBATCH --output slurm.%J.out
 #SBATCH --error slurm.%J.err
 #SBATCH --time=48:00:00

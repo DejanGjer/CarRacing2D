@@ -11,7 +11,7 @@ STARTING_EPISODE              = 1
 ENDING_EPISODE                = 1000
 SKIP_FRAMES                   = 2
 TRAINING_BATCH_SIZE           = 64
-SAVE_TRAINING_FREQUENCY       = 25
+SAVE_TRAINING_FREQUENCY       = 1
 UPDATE_TARGET_MODEL_FREQUENCY = 5
 
 if __name__ == '__main__':
@@ -88,6 +88,6 @@ if __name__ == '__main__':
             agent.update_target_model()
 
         if e % SAVE_TRAINING_FREQUENCY == 0:
-            agent.save('./save/trial_{}.h5'.format(e))
+            agent.save('./save/trial_{}.weights.h5'.format(e))
 
     env.close()
