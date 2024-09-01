@@ -29,10 +29,9 @@ class CarRacingDQNAgent:
     def __init__(
         self,
         action_space    = [
-            (-1, 1,   0), (0, 1,   0), (1, 1,   0),
-            (-1, 0,   0), (0, 0,   0), (1, 0,   0),   #           Action Space Structure
-            (-1, 0, 0.2), (0, 0, 0.2), (1, 0, 0.2),  #        (Steering Wheel, Gas, Break)
-            (-1, 0, 0.5), (0, 0, 0.5), (1, 0, 0.5),  # Range        -1~1       0~1   0~1
+            (-1, 1,   0), (0, 1,   0), (1, 1,   0),    #           Action Space Structure
+            (-1, 0,   0), (0, 0,   0), (1, 0,   0),    #        (Steering Wheel, Gas, Break)
+            (-1, 0, 0.5), (0, 0, 0.5), (1, 0, 0.5),    # Range        -1~1       0~1   0~1
         ],
         frame_stack_num = 3,
         memory_size     = 5000,
