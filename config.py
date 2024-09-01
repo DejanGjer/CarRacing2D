@@ -1,5 +1,5 @@
 # Training configuration
-name = "Test Run"
+name = "Test new architecture"
 pretrained_model_path = None
 num_episodes = 4
 render = False
@@ -10,6 +10,7 @@ checkpoint_frequency = 2
 update_target_model_frequency = 5
 
 # Agent configuration
+image_size = (96, 96)
 state_frame_stack = 3
 memory_buffer_size = 5000
 gamma = 0.95

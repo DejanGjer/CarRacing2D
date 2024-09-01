@@ -1,13 +1,15 @@
 import cv2
 import numpy as np
 
-def process_state_image(state):
-    state = cv2.cvtColor(state, cv2.COLOR_BGR2GRAY)
-    # state = cv2.resize(state, (32, 32))
+def process_state_image(frame, image_size):
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # if image size is not 96x96, resize it
+    if image_size != (96, 96):
+        frame = cv2.resize(frame, image_size)
     # cv2.imwrite(f"images/state_{step}.png", state)
-    state = state.astype(float)
-    state /= 255.0
-    return state
+    frame = frame.astype(float)
+    frame /= 255.0
+    return frame
 
 def generate_state_frame_stack_from_queue(deque):
     frame_stack = np.array(deque)

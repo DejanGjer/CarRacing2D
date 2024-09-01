@@ -21,6 +21,7 @@ def play(train_model, play_episodes, render_mode, config):
     env = gym.make('CarRacing-v2', render_mode=render_mode)
     agent = CarRacingDQNAgent(
         action_space=config.actions_space,
+        image_size=config.image_size,
         frame_stack_num=config.state_frame_stack,
         memory_size=config.memory_buffer_size,
         gamma=config.gamma,

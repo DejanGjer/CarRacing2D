@@ -31,6 +31,7 @@ if __name__ == '__main__':
     print("Loading agent ...")
     agent = CarRacingDQNAgent(
         action_space=config.actions_space,
+        image_size=config.image_size,
         frame_stack_num=config.state_frame_stack,
         memory_size=config.memory_buffer_size,
         gamma=config.gamma,
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     print("Running training loop")
     for e in tqdm(range(config.num_episodes)):
         init_state = env.reset()[0]
-        init_state = process_state_image(init_state)
+        init_state = process_state_image(init_state, config.image_size)
 
         total_reward = 0
         negative_reward_counter = 0
@@ -77,7 +78,7 @@ if __name__ == '__main__':
 
             total_reward += reward
 
-            next_state = process_state_image(next_state)
+            next_state = process_state_image(next_state, config.image_size)
             state_frame_stack_queue.append(next_state)
             next_state_frame_stack = generate_state_frame_stack_from_queue(state_frame_stack_queue)
 
