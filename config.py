@@ -1,5 +1,5 @@
 # Training configuration
-name = "My action space 3 stack frame DQN"
+name = "Test Run"
 pretrained_model_path = None
 num_episodes = 4
 render = False

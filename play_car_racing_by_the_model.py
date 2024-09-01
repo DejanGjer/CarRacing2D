@@ -3,13 +3,33 @@ import gym
 import pygame
 import time
 from collections import deque
+import importlib.util
+import sys
+import torch
 from CarRacingDQNAgent import CarRacingDQNAgent
 from common_functions import process_state_image
 from common_functions import generate_state_frame_stack_from_queue
 
-def play(train_model, play_episodes, render_mode):
+def load_config(config_path):
+    spec = importlib.util.spec_from_file_location("config", config_path)
+    config = importlib.util.module_from_spec(spec)
+    sys.modules["config"] = config
+    spec.loader.exec_module(config)
+    return config
+
+def play(train_model, play_episodes, render_mode, config):
     env = gym.make('CarRacing-v2', render_mode=render_mode)
-    agent = CarRacingDQNAgent(epsilon=0) # Set epsilon to 0 to ensure all actions are instructed by the agent
+    agent = CarRacingDQNAgent(
+        action_space=config.actions_space,
+        frame_stack_num=config.state_frame_stack,
+        memory_size=config.memory_buffer_size,
+        gamma=config.gamma,
+        epsilon=0,  # Set epsilon to 0 to ensure all actions are instructed by the agent
+        epsilon_min=0,
+        epsilon_decay=0,
+        learning_rate=config.learning_rate, 
+        device = torch.device("cpu")
+    )
     agent.load_inference(train_model)
 
     actions = []
@@ -64,18 +84,20 @@ def render(actions):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Play CarRacing by the trained model.')
-    parser.add_argument('-m', '--model', required=True, help='The `.pt` file of the trained model.')
+    parser.add_argument('-m', '--model', required=True, type=str, help='The `.pt` file of the trained model.')
+    parser.add_argument('-c', '--config', required=True, type=str, help='The configuration file from the training process.')
     parser.add_argument('-e', '--episodes', type=int, default=1, help='The number of episodes should the model plays.')
     parser.add_argument('-p', '--precompute', action='store_true', help='Precompute the actions for each time frame.')
     args = parser.parse_args()
     train_model = args.model
     play_episodes = args.episodes
+    config = load_config(args.config)
 
     if args.precompute:
         print("Precomputing the actions for each time frame...")
-        actions = play(train_model, play_episodes, render_mode="rgb_array")
+        actions = play(train_model, play_episodes, "rgb_array", config)
         print("Rendering the actions...")
         render(actions)
     else:
         print("Playing the CarRacing...")
-        play(train_model, play_episodes, render_mode="human")
+        play(train_model, play_episodes, "human")
