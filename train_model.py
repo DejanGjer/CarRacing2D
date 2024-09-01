@@ -1,7 +1,7 @@
 import argparse
 import gym
 from collections import deque
-from CarRacingDQNAgentTorch import CarRacingDQNAgent
+from CarRacingDQNAgent import CarRacingDQNAgent
 from common_functions import process_state_image
 from common_functions import generate_state_frame_stack_from_queue
 from tqdm import tqdm
@@ -12,10 +12,10 @@ import json
 
 RENDER                        = False
 STARTING_EPISODE              = 1
-ENDING_EPISODE                = 10
+ENDING_EPISODE                = 1000
 SKIP_FRAMES                   = 2
 TRAINING_BATCH_SIZE           = 64
-SAVE_TRAINING_FREQUENCY       = 5
+SAVE_TRAINING_FREQUENCY       = 100
 UPDATE_TARGET_MODEL_FREQUENCY = 5
 
 if __name__ == '__main__':
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--start', type=int, help='The starting episode, default to 1.')
     parser.add_argument('-e', '--end', type=int, help='The ending episode, default to 1000.')
     parser.add_argument('-p', '--epsilon', type=float, default=1.0, help='The starting epsilon of the agent, default to 1.0.')
-    parser.add_argument('-w', '--windows_size', type=int, default=3, help='The number of frames to stack, default to 3.')
+    parser.add_argument('-w', '--window_size', type=int, default=3, help='The number of frames to stack, default to 3.')
     args = parser.parse_args()
 
     output_path = os.path.join(os.getcwd(), "output", time.strftime('%Y%m%d-%H%M%S'))
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     print("Loading environment ...")
     env = gym.make('CarRacing-v2')
     print("Loading agent ...")
-    agent = CarRacingDQNAgent(epsilon=args.epsilon)
+    agent = CarRacingDQNAgent(epsilon=args.epsilon, frame_stack_num=args.window_size)
     if args.model:
         agent.load(args.model)
     if args.start:
