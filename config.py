@@ -1,13 +1,13 @@
 # Training configuration
+name = "My action space 3 stack frame DQN"
 pretrained_model_path = None
-start_episode = 1
-end_episode = 1000
+num_episodes = 4
 render = False
 skip_frames = 2
 batch_size = 64
 learning_rate = 0.001
-checkpoint_frequency = 100
-update_target_model_frequency = 100
+checkpoint_frequency = 2
+update_target_model_frequency = 5
 
 # Agent configuration
 state_frame_stack = 3
