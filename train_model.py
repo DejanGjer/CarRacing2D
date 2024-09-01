@@ -12,10 +12,10 @@ import json
 
 RENDER                        = False
 STARTING_EPISODE              = 1
-ENDING_EPISODE                = 1000
+ENDING_EPISODE                = 4
 SKIP_FRAMES                   = 2
 TRAINING_BATCH_SIZE           = 64
-SAVE_TRAINING_FREQUENCY       = 100
+SAVE_TRAINING_FREQUENCY       = 2
 UPDATE_TARGET_MODEL_FREQUENCY = 5
 
 if __name__ == '__main__':
@@ -28,6 +28,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     output_path = os.path.join(os.getcwd(), "output", time.strftime('%Y%m%d-%H%M%S'))
+    print(f"Output path: {output_path}")
     os.makedirs(output_path, exist_ok=True)
     # save all arguments to config file
     with open(os.path.join(output_path, "config.json"), "w") as f:

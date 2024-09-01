@@ -88,7 +88,7 @@ class CarRacingDQNAgent:
             if done:
                 target[action_index] = reward
             else:
-                t = self.model(next_state).detach().cpu().numpy()[0]
+                t = self.target_model(next_state).detach().cpu().numpy()[0]
                 target[action_index] = reward + self.gamma * np.amax(t)
             train_state.append(state.squeeze(0).cpu().numpy())
             train_target.append(target)
@@ -102,7 +102,7 @@ class CarRacingDQNAgent:
         loss = self.criterion(outputs, train_target)
         loss.backward()
         self.optimizer.step()
-
+    
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
 

@@ -3,7 +3,7 @@ import numpy as np
 
 def process_state_image(state):
     state = cv2.cvtColor(state, cv2.COLOR_BGR2GRAY)
-    # state = cv2.resize(state, (30, 30))
+    # state = cv2.resize(state, (32, 32))
     # cv2.imwrite(f"images/state_{step}.png", state)
     state = state.astype(float)
     state /= 255.0
