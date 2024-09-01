@@ -100,4 +100,4 @@ if __name__ == '__main__':
         render(actions)
     else:
         print("Playing the CarRacing...")
-        play(train_model, play_episodes, "human")
+        play(train_model, play_episodes, "human", config)
