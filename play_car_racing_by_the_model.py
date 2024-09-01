@@ -37,7 +37,7 @@ def play(train_model, play_episodes, render_mode, config):
 
     for e in range(play_episodes):
         init_state = env.reset()[0]
-        init_state = process_state_image(init_state)
+        init_state = process_state_image(init_state, config.image_size)
 
         total_reward = 0
         state_frame_stack_queue = deque([init_state]*agent.frame_stack_num, maxlen=agent.frame_stack_num)
@@ -54,7 +54,7 @@ def play(train_model, play_episodes, render_mode, config):
             total_reward += reward
             actions[-1].append(action)
 
-            next_state = process_state_image(next_state)
+            next_state = process_state_image(next_state, config.image_size)
             state_frame_stack_queue.append(next_state)
             frames += 1
 
@@ -67,8 +67,7 @@ def play(train_model, play_episodes, render_mode, config):
 def render(actions):
     env = gym.make('CarRacing-v2', render_mode="human")
     for e in range(len(actions)):
-        init_state = env.reset()[0]
-        init_state = process_state_image(init_state)
+        _ = env.reset()[0]
         done = False
         frame = 0
         
