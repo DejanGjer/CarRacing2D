@@ -10,6 +10,7 @@ import json
 import shutil
 
 import config
+from rewards import OutOfTrackReward
 
 if __name__ == '__main__':
     print(config.name)
@@ -50,9 +51,12 @@ if __name__ == '__main__':
 
         total_reward = 0
         negative_reward_counter = 0
+        reward_history = []
         state_frame_stack_queue = deque([init_state]*agent.frame_stack_num, maxlen=agent.frame_stack_num)
         time_frame_counter = 1
         done = False
+        if "out_of_track" in config.rewards:
+            out_of_track_reward = OutOfTrackReward(**config.out_of_track_reward_args)
         
         while True:
             if config.render:
@@ -69,12 +73,17 @@ if __name__ == '__main__':
                 if done:
                     break
 
+            reward_history.append(reward)
             # If continually getting negative reward 10 times after the tolerance steps, terminate this episode
             negative_reward_counter = negative_reward_counter + 1 if time_frame_counter > 100 and reward < 0 else 0
 
             # Extra bonus for the model if it uses full gas
-            if action[1] == 1 and action[2] == 0:
+            if "gas" in config.rewards and action[1] == 1 and action[2] == 0:
                 reward *= 1.5
+
+            # Extra penalty for the model if it goes out of the track
+            if "out_of_track" in config.rewards:
+                reward += out_of_track_reward.get_reward(reward_history)
 
             total_reward += reward
 
@@ -84,7 +93,7 @@ if __name__ == '__main__':
 
             agent.memorize(current_state_frame_stack, action, reward, next_state_frame_stack, done)
 
-            if done or negative_reward_counter >= 25 or total_reward < 0:
+            if done or negative_reward_counter >= config.max_consecutive_negative_steps or total_reward < 0:
                 results["episode"].append(e+1)
                 results["frames"].append(time_frame_counter)
                 results["total_rewards"].append(total_reward)
@@ -94,6 +103,9 @@ if __name__ == '__main__':
             if len(agent.memory) > config.batch_size:
                 agent.replay(config.batch_size)
             time_frame_counter += 1
+
+        if "out_of_track" in config.rewards:
+            out_of_track_reward.decay_steps()
 
         if (e+1) % config.update_target_model_frequency == 0:
             agent.update_target_model()
