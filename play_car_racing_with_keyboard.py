@@ -33,6 +33,7 @@ def get_action():
 # Run the environment loop
 done = False
 reward = 0
+frames = 0
 while not done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -40,6 +41,8 @@ while not done:
     action = get_action()
     _, r, terminated, truncated, _ = env.step(action)
     reward += r
+    frames += 1
+    print(f"Frames: {frames}, Reward: {r}, Total Reward: {reward}")
     done = terminated or truncated
     if done:
         env.reset()

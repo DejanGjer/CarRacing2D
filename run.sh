@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=car_race
 #SBATCH --ntasks=1
-#SBATCH --nodelist=n16
+#SBATCH --nodelist=n19
 #SBATCH --partition=cuda
 #SBATCH --gres=gpu:1
 #SBATCH --mem=15GB

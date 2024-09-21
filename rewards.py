@@ -1,6 +1,6 @@
 
 class OutOfTrackReward:
-    def __init__(self, value, min_negative_steps=8, max_negative_steps=36, decay_episodes_number=400):
+    def __init__(self, value, min_negative_steps=8, max_negative_steps=16, decay_episodes_number=400):
         self.value = value
         self.min_negative_steps = min_negative_steps
         self.max_negative_steps = max_negative_steps

@@ -57,6 +57,7 @@ def play(train_model, play_episodes, render_mode, config):
             next_state = process_state_image(next_state, config.image_size)
             state_frame_stack_queue.append(next_state)
             frames += 1
+            print(f"Frames: {frames}, Reward: {reward}, Total Reward: {total_reward}")
 
             if done:
                 print('Episode: {}/{}, Scores(Time Frames): {}, Total Rewards: {:.5}'.format(e+1, play_episodes, frames, float(total_reward)))
