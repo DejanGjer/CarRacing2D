@@ -8,33 +8,23 @@ import torch.optim as optim
 class DQN(nn.Module):
     def __init__(self, input_shape, num_actions):
         super(DQN, self).__init__()
-        # self.conv1 = nn.Conv2d(input_shape[0], 6, kernel_size=7, stride=3)
-        # self.pool1 = nn.MaxPool2d(kernel_size=2)
-        # self.conv2 = nn.Conv2d(6, 12, kernel_size=4)
-        # self.pool2 = nn.MaxPool2d(kernel_size=2)
-        # self.fc1 = nn.Linear(432, 216)
-        # self.fc2 = nn.Linear(216, num_actions)
-
-        self.conv1 = nn.Conv2d(input_shape[0], 8, kernel_size=5, padding='same')
-        self.pool1 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.conv2 = nn.Conv2d(8, 16, kernel_size=5, padding='same')
-        self.pool2 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.conv3 = nn.Conv2d(16, 32, kernel_size=5, padding='same')
-        self.pool3 = nn.MaxPool2d(kernel_size=2, stride=2)
-        self.fc1 = nn.Linear(32 * (input_shape[1] // 8) * (input_shape[2] // 8), 256)
-        self.fc2 = nn.Linear(256, num_actions)
+        self.conv1 = nn.Conv2d(input_shape[0], 6, kernel_size=7, stride=3)
+        self.pool1 = nn.MaxPool2d(kernel_size=2)
+        self.conv2 = nn.Conv2d(6, 12, kernel_size=4)
+        self.pool2 = nn.MaxPool2d(kernel_size=2)
+        self.fc1 = nn.Linear(432, 216)
+        self.fc2 = nn.Linear(216, num_actions)
 
     def forward(self, x):
         x = torch.relu(self.conv1(x))
         x = self.pool1(x)
         x = torch.relu(self.conv2(x))
         x = self.pool2(x)
-        x = torch.relu(self.conv3(x))
-        x = self.pool3(x)
         x = x.view(x.size(0), -1)   
         x = torch.relu(self.fc1(x))
         x = self.fc2(x)
         return x
+       
 
 class CarRacingDQNAgent:
     def __init__(
@@ -50,6 +40,7 @@ class CarRacingDQNAgent:
         learning_rate   = 0.001,
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     ):
+        assert image_size == (96, 96), "Image size must be 96x96"
         self.action_space    = action_space
         self.frame_stack_num = frame_stack_num
         self.memory          = deque(maxlen=memory_size)
