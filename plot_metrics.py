@@ -13,8 +13,9 @@ def plot_metric(episodes, metric, metric_name, output_dir):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("-f", type=str, required=True, help="Path to the file with the metrics")
-    parser.add_argument("-o", type=str, required=True, help="Output directory")
+    parser.add_argument("--file", type=str, required=True, help="Path to the file with the metrics")
+    parser.add_argument("--output", type=str, required=True, help="Output directory")
+
     args = parser.parse_args()
     file_path = args.file
     with open(file_path, 'r') as file:
