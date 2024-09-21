@@ -12,9 +12,9 @@ def plot_metric(episodes, metric, metric_name, output_dir):
     plt.savefig(os.path.join(output_dir, f"{metric_name.replace(' ', '_').lower()}.png"))
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Plotting the metrics of the training process.')
-    parser.argparse.ArgumentParser('-f', '--file', required=True, help='The json file that contains the metric data.')
-    parser.argparse.ArgumentParser('-o', '--output', default=".", help='The output directory to save the plots.')
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-f", type=str, required=True, help="Path to the file with the metrics")
+    parser.add_argument("-o", type=str, required=True, help="Output directory")
     args = parser.parse_args()
     file_path = args.file
     with open(file_path, 'r') as file:
