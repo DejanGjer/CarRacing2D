@@ -1,7 +1,7 @@
 # Training configuration
-name = "Grass penalty"
+name = "Adding time reward"
 pretrained_model_path = ""
-num_episodes = 1000
+num_episodes = 1500
 render = False
 skip_frames = 2
 batch_size = 64
@@ -24,7 +24,7 @@ actions_space = [
     (-0.5, 0, 0.2), (0, 0, 0.2), (0.5, 0, 0.2),   #        (Steering Wheel, Gas, Break)
     (-0.5, 0, 0.5), (0, 0, 0.5), (0.5, 0, 0.5),   # Range        -1~1       0~1   0~1
 ]
-rewards = ["gas", "grass"]
+rewards = ["gas", "grass", "prevent_drifting", "time_reward"]
 # out_of_track_reward_args = {
 #     "value": -1,
 #     "min_negative_steps": 8,
@@ -32,7 +32,7 @@ rewards = ["gas", "grass"]
 #     "decay_episodes_number": 400
 # }
 grass_penalty_args = {
-    "value": -5,
+    "value": -1,
     "start_from_step": 25
 }
 prevent_drifting_penalty_args = {
@@ -40,4 +40,10 @@ prevent_drifting_penalty_args = {
 }
 gas_reward_args = {
     "value": 0.5
+}
+time_reward_args = {
+    "sucessfull_reward_threshold": 800,
+    "good_avg_speed": 1.0,
+    "failure_value": -50,
+    "sucessfull_value": 50
 }

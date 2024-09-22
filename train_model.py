@@ -10,7 +10,7 @@ import json
 import shutil
 
 import config
-from rewards import OutOfTrackReward, GrassPenatly, PreventDriftingPenalty, GasReward
+from rewards import OutOfTrackReward, GrassPenatly, PreventDriftingPenalty, GasReward, TimeReward
 
 if __name__ == '__main__':
     print(config.name)
@@ -24,6 +24,7 @@ if __name__ == '__main__':
         "episode": [],
         "frames": [],
         "total_rewards": [],
+        "last_reward": [],
         "epsilon": []
     }
 
@@ -51,6 +52,9 @@ if __name__ == '__main__':
 
         total_reward = 0
         negative_reward_counter = 0
+        raw_reward_sum = 0
+        raw_best_reward_sum = 0
+        raw_best_timeframe = 0
         reward_history = []
         state_frame_stack_queue = deque([init_state]*agent.frame_stack_num, maxlen=agent.frame_stack_num)
         time_frame_counter = 1
@@ -63,6 +67,8 @@ if __name__ == '__main__':
             prevent_drifting_penalty = PreventDriftingPenalty(**config.prevent_drifting_penalty_args)
         if "gas" in config.rewards:
             gas_reward = GasReward(**config.gas_reward_args)
+        if "time_reward" in config.rewards:
+            time_reward = TimeReward(**config.time_reward_args)
         
         while True:
             if config.render:
@@ -80,6 +86,11 @@ if __name__ == '__main__':
                     break
 
             reward_history.append(reward)
+            raw_reward_sum += reward
+            if raw_reward_sum > raw_best_reward_sum:
+                raw_best_reward_sum = raw_reward_sum
+                raw_best_timeframe = time_frame_counter
+
             # If continually getting negative reward 10 times after the tolerance steps, terminate this episode
             negative_reward_counter = negative_reward_counter + 1 if time_frame_counter > 100 and reward < 0 else 0
 
@@ -99,6 +110,11 @@ if __name__ == '__main__':
             if "prevent_drifting" in config.rewards:
                 reward += prevent_drifting_penalty.prevent_drifting(action)
 
+            # Extra reward for the model if it finishes the track in a good time
+            if "time_reward" in config.rewards:
+                if done or negative_reward_counter >= config.max_consecutive_negative_steps or total_reward < 0:
+                    reward += time_reward.get_reward(raw_best_reward_sum, raw_best_timeframe * 2)
+
             total_reward += reward
 
             next_state = process_state_image(next_state, config.image_size)
@@ -111,6 +127,7 @@ if __name__ == '__main__':
                 results["episode"].append(e+1)
                 results["frames"].append(time_frame_counter)
                 results["total_rewards"].append(total_reward)
+                results["last_reward"].append(reward)
                 results["epsilon"].append(agent.epsilon)
                 print('Episode: {}/{}, Scores(Time Frames): {}, Total Rewards(adjusted): {:.5}, Epsilon: {:.5}'.format(e+1, config.num_episodes, time_frame_counter, float(total_reward), float(agent.epsilon)))
                 break
