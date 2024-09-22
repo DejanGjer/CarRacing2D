@@ -24,7 +24,7 @@ actions_space = [
     (-0.5, 0, 0.2), (0, 0, 0.2), (0.5, 0, 0.2),   #        (Steering Wheel, Gas, Break)
     (-0.5, 0, 0.5), (0, 0, 0.5), (0.5, 0, 0.5),   # Range        -1~1       0~1   0~1
 ]
-rewards = ["gas", "grass", "prevent_drifting"]
+rewards = ["gas", "grass"]
 # out_of_track_reward_args = {
 #     "value": -1,
 #     "min_negative_steps": 8,
@@ -32,9 +32,12 @@ rewards = ["gas", "grass", "prevent_drifting"]
 #     "decay_episodes_number": 400
 # }
 grass_penalty_args = {
-    "value": -1,
+    "value": -5,
     "start_from_step": 25
 }
 prevent_drifting_penalty_args = {
     "value": -0.2
+}
+gas_reward_args = {
+    "value": 0.5
 }

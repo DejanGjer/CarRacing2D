@@ -10,7 +10,7 @@ import json
 import shutil
 
 import config
-from rewards import OutOfTrackReward, GrassPenatly, PreventDriftingPenalty
+from rewards import OutOfTrackReward, GrassPenatly, PreventDriftingPenalty, GasReward
 
 if __name__ == '__main__':
     print(config.name)
@@ -61,6 +61,8 @@ if __name__ == '__main__':
             grass_penalty = GrassPenatly(**config.grass_penalty_args)
         if "prevent_drifting" in config.rewards:
             prevent_drifting_penalty = PreventDriftingPenalty(**config.prevent_drifting_penalty_args)
+        if "gas" in config.rewards:
+            gas_reward = GasReward(**config.gas_reward_args)
         
         while True:
             if config.render:
@@ -83,7 +85,7 @@ if __name__ == '__main__':
 
             # Extra bonus for the model if it uses full gas
             if "gas" in config.rewards and action[1] == 1 and action[2] == 0:
-                reward *= 1.5
+                reward += gas_reward.is_full_gas(action)
 
             # Extra penalty for the model if it goes out of the track
             if "out_of_track" in config.rewards:

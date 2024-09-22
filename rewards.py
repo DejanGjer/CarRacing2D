@@ -58,5 +58,29 @@ class PreventDriftingPenalty:
         if action[1] == 1 and action[0] != 0:
             return self.value
         return 0
+    
+class GasReward:
+    def __init__(self, value):
+        self.value = value
+    
+    def is_full_gas(self, action):
+        if action[1] == 1 and action[2] == 0 and action[0] == 0:
+            return self.value
+        return 0
+        
+class TimeReward:
+    def __init__(self, succesful_threshold, failure_value, good_avg_speed):
+        self.failure_value = failure_value
+        self.succesful_threshold = succesful_threshold
+        self.good_avg_speed = good_avg_speed
+        
+    def get_reward(self, tile_reward, time_frame_counter):
+        if tile_reward < self.succesful_threshold:
+            return self.failure_value
+        avg_speed = tile_reward / time_frame_counter
+        if avg_speed < self.good_avg_speed:
+            return 0
+        return ((avg_speed / self.good_avg_speed) ** 2) * 50
+
 
         
