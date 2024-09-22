@@ -1,3 +1,5 @@
+import cv2
+import numpy as np
 
 class OutOfTrackReward:
     def __init__(self, value, min_negative_steps=8, max_negative_steps=16, decay_episodes_number=400):
@@ -25,4 +27,36 @@ class OutOfTrackReward:
         if self.outside_of_the_track(reward_history):
             return self.value
         return 0
+    
+class GrassPenatly:
+    def __init__(self, value, start_from_step=25):
+        self.value = value
+        self.start_from_step = start_from_step
+    
+    def is_green(self, pixel):
+        # Check if the pixel is green
+        if pixel[1] < pixel[0] or pixel[1] - pixel[0] <= 50:
+            return False
+        if pixel[1] < pixel[2] or pixel[1] - pixel[2] <= 50:
+            return False
+        return True
+
+    def is_grass(self, frame, step):
+        # Check if the car is on the grass
+        if step < self.start_from_step:
+            return 0
+        rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        if self.is_green(rgb_frame[65, 47]) and self.is_green(rgb_frame[72, 45]) and self.is_green(rgb_frame[72, 50]):
+            return self.value
+        return 0
+    
+class PreventDriftingPenalty:
+    def __init__(self, value):
+        self.value = value
+    
+    def prevent_drifting(self, action):
+        if action[1] == 1 and action[0] != 0:
+            return self.value
+        return 0
+
         

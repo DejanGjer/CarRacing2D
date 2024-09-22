@@ -10,7 +10,7 @@ import json
 import shutil
 
 import config
-from rewards import OutOfTrackReward
+from rewards import OutOfTrackReward, GrassPenatly, PreventDriftingPenalty
 
 if __name__ == '__main__':
     print(config.name)
@@ -57,6 +57,10 @@ if __name__ == '__main__':
         done = False
         if "out_of_track" in config.rewards:
             out_of_track_reward = OutOfTrackReward(**config.out_of_track_reward_args)
+        if "grass" in config.rewards:
+            grass_penalty = GrassPenatly(**config.grass_penalty_args)
+        if "prevent_drifting" in config.rewards:
+            prevent_drifting_penalty = PreventDriftingPenalty(**config.prevent_drifting_penalty_args)
         
         while True:
             if config.render:
@@ -84,6 +88,14 @@ if __name__ == '__main__':
             # Extra penalty for the model if it goes out of the track
             if "out_of_track" in config.rewards:
                 reward += out_of_track_reward.get_reward(reward_history)
+
+            # Extra penalty for the model if it goes on the grass
+            if "grass" in config.rewards:
+                reward += grass_penalty.is_grass(next_state, time_frame_counter)
+
+            # Extra penalty for the model if car drifts
+            if "prevent_drifting" in config.rewards:
+                reward += prevent_drifting_penalty.prevent_drifting(action)
 
             total_reward += reward
 
